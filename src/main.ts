@@ -1,11 +1,11 @@
 /** import section */
-require("./environment/connect");
 import express from "express";
-import { Environment } from "./environment/environment";
 const app = express();
+import dotenv from "dotenv";
 import { connectDb } from "./environment/connect";
 /** import routes */
 import router from "./routes/task.routing";
+import sanitizedConfig from "./environment/environment";
 /** middleware */
 app.use(express.json());
 app.use("/api/taskmanager/v1", router);
@@ -13,10 +13,11 @@ app.use("/api/taskmanager/v1", router);
  * 1. mongodb connection
  * 2. nodejs server connection
  */
-const port = process.env.PORT || Environment.PORT;
+dotenv.config();
+const port = sanitizedConfig.PORT;
 const start = async () => {
   try {
-    await connectDb(Environment.DB_URL);
+    await connectDb();
     app.listen(port, () => {
       console.log(`server us runnig port: ${port}`);
     });

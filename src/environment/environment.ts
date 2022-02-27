@@ -1,12 +1,28 @@
-export const Environment = {
-  PORT: 3000,
-  HOST: "localhost",
-  DB_URL:
-    "mongodb+srv://arnabDutta:adutta0100@cluster0.vdoye.mongodb.net/Task-Manager?retryWrites=true&w=majority",
-  saltWorkFactor: 10,
-  accessTokenTtl: "15m",
-  refreshTokenTtl: "1y",
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config({ path: path.resolve(__dirname, "./.env") });
+interface ENV {
+  PORT: number | undefined;
+  MONGO_URI: string | undefined;
+}
+interface Config {
+  PORT: number;
+  MONGO_URI: string;
+}
+const getConfig = (): ENV => {
+  return {
+    PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
+    MONGO_URI: process.env.MONGO_URI,
+  };
 };
-// arnabDutta
-// adutta0100
-// mongodb+srv://arnabDutta:adutta0100@cluster0.vdoye.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+const getSanitzedConfig = (config: ENV): Config => {
+  for (const [key, value] of Object.entries(config)) {
+    if (value === undefined) {
+      throw new Error(`Missing key ${key} in config.env`);
+    }
+  }
+  return config as Config;
+};
+const config = getConfig();
+const sanitizedConfig = getSanitzedConfig(config);
+export default sanitizedConfig;
