@@ -1,3 +1,4 @@
 /node_modules
 /src/environment/connect.ts
 /package-lock.json
+/build
